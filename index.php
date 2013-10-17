@@ -6,8 +6,6 @@ include("Automatic/class.Automatic.php");
 
 $automatic = new Automatic(USERNAME, PASSWORD);
 
-
-
 // check my trips from past 24 hours
 $now = time();
 $yesterday = $now - 24*60*60;
