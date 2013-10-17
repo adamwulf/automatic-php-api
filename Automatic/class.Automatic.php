@@ -110,7 +110,7 @@ class Automatic{
 		$opts = array(
 		  'http'=>array(
 		    'method'=>"GET",
-		    'header'=>"Authorization: Basic ".base64_encode(USERNAME . ":" . PASSWORD)."\r\n"
+		    'header'=>"Authorization: Basic ".base64_encode($this->username . ":" . $this->password)."\r\n"
 		  )
 		);
 		
@@ -137,7 +137,7 @@ class Automatic{
 		$opts = array(
 		  'http'=>array(
 		    'method'=>"POST",
-		    'header'=>"Authorization: Basic ".base64_encode(USERNAME . ":" . PASSWORD)."\r\n"
+		    'header'=>"Authorization: Basic ".base64_encode($this->username . ":" . $this->password)."\r\n"
              . "Content-Length: " . strlen($data_string) . "\r\n",
 			'content' => $data_string
 		  )
