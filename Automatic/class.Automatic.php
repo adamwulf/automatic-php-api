@@ -138,7 +138,8 @@ class Automatic{
 		  'http'=>array(
 		    'method'=>"POST",
 		    'header'=>"Authorization: Basic ".base64_encode($this->username . ":" . $this->password)."\r\n"
-             . "Content-Length: " . strlen($data_string) . "\r\n",
+             . "Content-Length: " . strlen($data_string) . "\r\n"
+             . "Content-Type: application/x-www-form-urlencoded\r\n",
 			'content' => $data_string
 		  )
 		);
