@@ -1,4 +1,4 @@
-# Automatic API
+# Unofficial Automatic PHP API
 
 This is an unofficial PHP API for the Automatic Link (http://www.automatic.com/). The Automatic Link plugs into your car's data port and connects to your phone to help you track and improve your driving habits. This API gives you access to the data stored in your Automatic account, including your car information, driving history, parked locations, and profile information.
 
