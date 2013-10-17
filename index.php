@@ -1,51 +1,47 @@
 <?
 
 include("config.php");
+include("Automatic/class.Automatic.php");
 
-$host = "https://secure.milesense.com/v3/link/info?";
 
-$opts = array(
-  'http'=>array(
-    'method'=>"GET",
-    'header'=>"Authorization: Basic ".base64_encode(USERNAME . ":" . PASSWORD)."\r\n"
-  )
-);
-
-$context = stream_context_create($opts);
-$fp = fopen($host, 'r', false, $context);
-$contents = stream_get_contents($fp);
-// read the content from $fp here.
-fclose($fp);
-
-print_r($contents);
-
-echo "\n\n\n\n";
+$automatic = new Automatic(USERNAME, PASSWORD);
 
 
 
+// check my trips from past 24 hours
+$now = time();
+$yesterday = $now - 24*60*60;
+$data = $automatic->getTrips($yesterday*1000, $now * 1000);
 
-$host = "https://secure.milesense.com/v3/user/trips/";
 
-$data = array("end_time" => 1381872653000, "start_time" => 1000);
-$data_string = json_encode($data);
-$data_string = http_build_query(array("data" => $data_string));
+// set our timezone
+date_default_timezone_set("America/Chicago");
 
-$opts = array(
-  'http'=>array(
-    'method'=>"POST",
-    'header'=>"Authorization: Basic ".base64_encode(USERNAME . ":" . PASSWORD)."\r\n"
-             . "Content-Length: " . strlen($data_string) . "\r\n",
-    'content' => $data_string
-  )
-);
+// loop through all my trips from the past 24 hours
+foreach($data->trips as $trip){
+	$place_from = $trip->startLocationNickname;
+	$place_to = $trip->endLocationNickname;
+	$startTime = $trip->startLocationStartTime / 1000;
+	$endTime = $trip->endLocationEndTime / 1000;
+	$duration = round(($endTime - $startTime) / 60, 2); // calculate duration in minutes
+	$mpg = round($trip->averageMPG, 2);
+	
+	echo $place_from . " - " . $place_to . "<br>";
+	echo date("Y-m-d h:ia", $startTime) . " - " . date("Y-m-d h:ia", $endTime) . "<br>";
+	echo $duration . " minutes.  " . $mpg . "MPG <br><br>";
+}
 
-$context = stream_context_create($opts);
-$fp = fopen($host, 'r', false, $context);
-$contents = stream_get_contents($fp);
-// read the content from $fp here.
-fclose($fp);
+/*
+print_r($automatic->getLinkInfo());
 
-print_r($contents);
+print_r($automatic->getTrips($yesterday, $now));
 
+print_r($automatic->getScores($yesterday, $now));
+
+$info = $automatic->getLinkInfo();
+print_r($automatic->getParkedLocations($info->linkInfoList[0]->associatedVehicle));
+
+print_r($automatic->getCars());
+*/
 
 ?>
