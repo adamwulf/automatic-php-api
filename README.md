@@ -1,3 +1,7 @@
+# Official API Released at Automatic.com
+
+This repository is an unofficial API for Automatic, but as of 1/14/14, Automatic has released their own official API. Information is available at https://www.automatic.com/developer/documentation/.
+
 # Unofficial Automatic PHP API
 
 This is an unofficial PHP API for the Automatic Link (http://www.automatic.com/). The Automatic Link plugs into your car's data port and connects to your phone to help you track and improve your driving habits. This API gives you access to the data stored in your Automatic account, including your car information, driving history, parked locations, and profile information.
