@@ -22,7 +22,7 @@ if(isset($_SESSION["automatic_token"])){
 if(!$automatic->isLoggedIn()){
 	if (!isset($_GET['code']))
 	{
-		$scopes = array("scope:notification:speeding", "scope:location", "scope:vehicle", "scope:trip:summary");
+		$scopes = array("scope:location", "scope:vehicle", "scope:trip:summary");
 		$auth_url = $automatic->authenticationURLForScopes($scopes);
 	    header('Location: ' . $auth_url);
 	    die('Redirect');

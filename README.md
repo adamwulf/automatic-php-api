@@ -6,7 +6,22 @@ This is a PHP client library for the Automatic API (http://www.automatic.com/). 
 
 The Automatic API uses OAuth2 to authenticate against their website.
 
+## Cloning this Repo
+
+This repo uses a PHP OAuth2 library for authentication as a submodule. When cloning, be sure to:
+
+```
+$ git clone git@github.com:adamwulf/automatic-php-api.git
+$ cd automatic-php-api
+$ git submodule init
+$ git submodule update
+```
+
+
 ## Usage
+
+Below is a simple code snippet that shows how to authenticate with the API and send requests to fetch the user's trip information.
+
 
 ```
 $automatic = new Automatic($your_client_id, $your_client_secret);
@@ -16,7 +31,7 @@ if (/* have a stored token somewhere in $_SESSION or the database */){
     $automatic->setOAuthToken($the_stored_token_to_reuse);
 }else if (!isset($_GET['code'])){
 	// we don't have a token stored, so fetch one
-	$scopes = array("scope:notification:speeding", "scope:location", "scope:vehicle", "scope:trip:summary");
+	$scopes = array("scope:location", "scope:vehicle", "scope:trip:summary");
 	$auth_url = $automatic->authenticationURLForScopes($scopes);
     header('Location: ' . $auth_url);
     die('Redirect');
