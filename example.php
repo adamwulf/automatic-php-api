@@ -1,45 +1,65 @@
 <?
 
-include("config.php");
-include("Automatic/class.Automatic.php");
+include('config.php');
+include('PHP-OAuth2/Client.php');
+include('PHP-OAuth2/GrantType/IGrantType.php');
+include('PHP-OAuth2/GrantType/AuthorizationCode.php');
+include('Automatic/class.Automatic.php');
 
 
-$automatic = new Automatic(USERNAME, PASSWORD);
+$client = new OAuth2\Client(AUTOMATIC_CLIENT_ID, AUTOMATIC_CLIENT_SECRET);
 
-// check my trips from past 24 hours
-$now = time();
-$yesterday = $now - 24*60*60;
-$data = $automatic->getTrips($yesterday*1000, $now * 1000);
+$automatic = new Automatic(AUTOMATIC_CLIENT_ID, AUTOMATIC_CLIENT_SECRET);
 
 
-// set our timezone
-date_default_timezone_set("America/Chicago");
+session_start();
 
-// loop through all my trips from the past 24 hours
-foreach($data->trips as $trip){
-	$place_from = $trip->startLocationNickname;
-	$place_to = $trip->endLocationNickname;
-	$startTime = $trip->startLocationStartTime / 1000;
-	$endTime = $trip->endLocationEndTime / 1000;
-	$duration = round(($endTime - $startTime) / 60, 2); // calculate duration in minutes
-	$mpg = round($trip->averageMPG, 2);
-	
-	echo $place_from . " - " . $place_to . "<br>";
-	echo date("Y-m-d h:ia", $startTime) . " - " . date("Y-m-d h:ia", $endTime) . "<br>";
-	echo $duration . " minutes.  " . $mpg . "MPG <br><br>";
+if(isset($_SESSION["automatic_token"])){
+	$automatic->setOAuthToken($_SESSION["automatic_token"]);
 }
 
-/*
-print_r($automatic->getLinkInfo());
 
-print_r($automatic->getTrips($yesterday, $now));
+if(!$automatic->isLoggedIn()){
+	if (!isset($_GET['code']))
+	{
+		$scopes = array("scope:notification:speeding", "scope:location", "scope:vehicle", "scope:trip:summary");
+		$auth_url = $automatic->authenticationURLForScopes($scopes);
+	    header('Location: ' . $auth_url);
+	    die('Redirect');
+	}
+	else
+	{
+	    $response_token = $automatic->getTokenForCode($_GET["code"]);
+	    $_SESSION["automatic_token"] = $response_token; // keep user logged in w/ session
+	    $automatic->setOAuthToken($_SESSION["automatic_token"]);
+	}
+}else if(isset($_REQUEST["logout"])){
+	session_destroy();
+	header("Location: " . AUTOMATIC_REDIRECT_URI);
+	exit;
+}
 
-print_r($automatic->getScores($yesterday, $now));
 
-$info = $automatic->getLinkInfo();
-print_r($automatic->getParkedLocations($info->linkInfoList[0]->associatedVehicle));
 
-print_r($automatic->getCars());
-*/
+//
+// we only get here after we've logged into Automatic
+
+echo "<a href='?logout'>Log Out</a>";
+echo "<br><br>";
+
+$response = $automatic->getTrips(1, 5);
+print_r($response);
+
+if(count($response["result"])){
+	//
+	// show that we can also fetch a single trip
+	
+	$trip = $response["result"][0];
+	$response = $automatic->getTrip($trip["id"]);
+	
+	echo "\n\n\n";
+	
+	print_r($response);
+}
 
 ?>
