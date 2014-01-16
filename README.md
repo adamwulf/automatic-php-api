@@ -1,15 +1,39 @@
-# Official API Released at Automatic.com
+# Automatic PHP API
 
-This repository is an unofficial API for Automatic, but as of 1/14/14, Automatic has released their own official API. Information is available at https://www.automatic.com/developer/documentation/.
+This is a PHP client library for the Automatic API (http://www.automatic.com/). The Automatic Link plugs into your car's data port and connects to your phone to help you track and improve your driving habits. This API gives you access to the data stored in your Automatic account, including some of your car information and driving history. The Automatic API is in early alpha, and more functionality is expected to be released soon.
 
-# Unofficial Automatic PHP API
+## Authentication
 
-This is an unofficial PHP API for the Automatic Link (http://www.automatic.com/). The Automatic Link plugs into your car's data port and connects to your phone to help you track and improve your driving habits. This API gives you access to the data stored in your Automatic account, including your car information, driving history, parked locations, and profile information.
+The Automatic API uses OAuth2 to authenticate against their website.
 
-Since Automatic isn't planning on prioritizing an offical API or data export anytime soon (http://community.automatic.com/automatic/topics/export_or_download_data_history), I've decided to try and build it myself to download my data from Automatic. This is what I've got so far, suggestions welcome!
+## Usage
 
-# API Credentials
+```
+$automatic = new Automatic($your_client_id, $your_client_secret);
 
-The API requires a username and password to access your data. However - the username and password for the API is different than the username and password that you use to access the site or login to the iPhone app.
+// logging in with OAuth2 code
+if (/* have a stored token somewhere in $_SESSION or the database */){
+    $automatic->setOAuthToken($the_stored_token_to_reuse);
+}else if (!isset($_GET['code'])){
+	// we don't have a token stored, so fetch one
+	$scopes = array("scope:notification:speeding", "scope:location", "scope:vehicle", "scope:trip:summary");
+	$auth_url = $automatic->authenticationURLForScopes($scopes);
+    header('Location: ' . $auth_url);
+    die('Redirect');
+}
+else
+{
+    $response_token = $automatic->getTokenForCode($_GET["code"]);
+    // store and re-use this $response_token to save the user's login
+    // across multiple requests
+    $automatic->setOAuthToken($response_token);
+}
 
-To find the username and password to use for the API, we'll need to proxy your iPhone's HTTP traffic through your computer so that we can watch the API calls from the phone and use the same username and password that the phone uses. Instructions for finding your API username and password can be found in the wiki at https://github.com/adamwulf/automatic-php-api/wiki
+$trip_data = $automatic->getTrips();
+```
+
+## Documentation
+
+The Automatic API documentation is available at: https://www.automatic.com/developer/documentation/
+
+More information is available at: https://www.automatic.com/developer/
