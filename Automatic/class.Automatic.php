@@ -11,7 +11,7 @@ class Automatic{
 
 	public function __construct($client_id, $client_secret){
 		$this->client = new OAuth2\Client($client_id, $client_secret);
-	    $this->client->setAccessTokenType(OAuth2\Client::ACCESS_TOKEN_TOKEN);
+	    $this->client->setAccessTokenType(OAuth2\Client::ACCESS_TOKEN_BEARER);
 	}
 	
 	public function getOAuthToken(){
