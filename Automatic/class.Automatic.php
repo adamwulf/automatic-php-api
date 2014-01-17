@@ -14,6 +14,16 @@ class Automatic{
 	    $this->client->setAccessTokenType(OAuth2\Client::ACCESS_TOKEN_BEARER);
 	}
 	
+	private function validateResponseForErrors($response){
+		if($response["code"] != 200){
+			if($response["code"] == 403){
+				$this->setOAuthToken("");
+			}
+			return false;
+		}
+		return $response;
+	}
+	
 	public function getOAuthToken(){
 		return $this->token;
 	}
@@ -38,11 +48,8 @@ class Automatic{
 	public function getTokenForCode($code){
 	    $params = array('code' => $_GET['code'], 'redirect_uri' => AUTOMATIC_REDIRECT_URI);
 	    $response = $this->client->getAccessToken(AUTOMATIC_TOKEN_ENDPOINT, 'authorization_code', $params);
-	    if($response['code'] != 200){
-	    	echo "can't find: \$response['result']['access_token']\n\n";
-		    print_r($response);
-		    exit;
-	    }else{
+	    $response = $this->validateResponseForErrors($response);
+	    if($response){
 	    	$ret = (object) array();
 	    	$ret->user_id = $response["result"]["user"]["id"];
 	    	$ret->access_token = $response["result"]["access_token"];
@@ -52,6 +59,7 @@ class Automatic{
 		    $this->client->setAccessToken($ret->access_token);
 		    return $ret;
 	    }
+	    return false;
 	}
 	
 	/**
@@ -64,7 +72,8 @@ class Automatic{
 	public function getTrips($page=1, $per_page=100){
 		$parameters = array("page" => $page, "per_page" => $per_page);
 		$params = http_build_query($parameters, null, '&');
-		return $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trips?" . $params);
+		$response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trips?" . $params);
+		return $this->validateResponseForErrors($response);
 	}
 	
 	
