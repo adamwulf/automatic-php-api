@@ -38,8 +38,14 @@ class Automatic{
 	public function getTokenForCode($code){
 	    $params = array('code' => $_GET['code'], 'redirect_uri' => AUTOMATIC_REDIRECT_URI);
 	    $response = $this->client->getAccessToken(AUTOMATIC_TOKEN_ENDPOINT, 'authorization_code', $params);
-	    $this->client->setAccessToken($response['result']['access_token']);
-	    return $response['result']['access_token'];
+	    if($response['code'] != 200){
+	    	echo "can't find: \$response['result']['access_token']\n\n";
+		    print_r($response);
+		    exit;
+	    }else{
+		    $this->client->setAccessToken($response['result']['access_token']);
+		    return $response['result']['access_token'];
+	    }
 	}
 	
 	/**
