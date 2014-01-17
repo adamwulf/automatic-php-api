@@ -43,8 +43,14 @@ class Automatic{
 		    print_r($response);
 		    exit;
 	    }else{
-		    $this->client->setAccessToken($response['result']['access_token']);
-		    return $response['result']['access_token'];
+	    	$ret = (object) array();
+	    	$ret->user_id = $response["result"]["user"]["id"];
+	    	$ret->access_token = $response["result"]["access_token"];
+	    	$ret->refresh_token = $response["result"]["refresh_token"];
+	    	$ret->scope = $response["result"]["scope"];
+	    
+		    $this->client->setAccessToken($ret->access_token);
+		    return $ret;
 	    }
 	}
 	
