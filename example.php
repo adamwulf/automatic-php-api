@@ -31,7 +31,8 @@ if(!$automatic->isLoggedIn()){
 	{
 	    $response_token = $automatic->getTokenForCode($_GET["code"]);
 	    $_SESSION["automatic_token"] = $response_token; // keep user logged in w/ session
-	    $automatic->setOAuthToken($_SESSION["automatic_token"]);
+      // set oauth token only accepts a string
+	    $automatic->setOAuthToken($_SESSION["automatic_token"]->access_token);
 	}
 }else if(isset($_REQUEST["logout"])){
 	session_destroy();
