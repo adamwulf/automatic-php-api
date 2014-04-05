@@ -15,7 +15,7 @@ $automatic = new Automatic(AUTOMATIC_CLIENT_ID, AUTOMATIC_CLIENT_SECRET);
 session_start();
 
 if(isset($_SESSION["automatic_token"])){
-  $automatic->setOAuthToken($_SESSION["automatic_token"]);
+  $automatic->setOAuthToken($_SESSION["automatic_token"]->access_token);
 }
 
 
