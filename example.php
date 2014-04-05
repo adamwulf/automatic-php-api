@@ -15,29 +15,29 @@ $automatic = new Automatic(AUTOMATIC_CLIENT_ID, AUTOMATIC_CLIENT_SECRET);
 session_start();
 
 if(isset($_SESSION["automatic_token"])){
-	$automatic->setOAuthToken($_SESSION["automatic_token"]);
+  $automatic->setOAuthToken($_SESSION["automatic_token"]);
 }
 
 
 if(!$automatic->isLoggedIn()){
-	if (!isset($_GET['code']))
-	{
-		$scopes = array("scope:location", "scope:vehicle", "scope:trip:summary");
-		$auth_url = $automatic->authenticationURLForScopes($scopes);
-	    header('Location: ' . $auth_url);
-	    die('Redirect');
-	}
-	else
-	{
-	    $response_token = $automatic->getTokenForCode($_GET["code"]);
-	    $_SESSION["automatic_token"] = $response_token; // keep user logged in w/ session
-      // set oauth token only accepts a string
-	    $automatic->setOAuthToken($_SESSION["automatic_token"]->access_token);
-	}
+  if (!isset($_GET['code']))
+  {
+    $scopes = array("scope:location", "scope:vehicle", "scope:trip:summary");
+    $auth_url = $automatic->authenticationURLForScopes($scopes);
+    header('Location: ' . $auth_url);
+    die('Redirect');
+  }
+  else
+  {
+    $response_token = $automatic->getTokenForCode($_GET["code"]);
+    $_SESSION["automatic_token"] = $response_token; // keep user logged in w/ session
+    // set oauth token only accepts a string
+    $automatic->setOAuthToken($_SESSION["automatic_token"]->access_token);
+  }
 }else if(isset($_REQUEST["logout"])){
-	session_destroy();
-	header("Location: " . AUTOMATIC_REDIRECT_URI);
-	exit;
+  session_destroy();
+  header("Location: " . AUTOMATIC_REDIRECT_URI);
+  exit;
 }
 
 
@@ -52,15 +52,15 @@ $response = $automatic->getTrips(1, 5);
 print_r($response);
 
 if(count($response["result"])){
-	//
-	// show that we can also fetch a single trip
-	
-	$trip = $response["result"][0];
-	$response = $automatic->getTrip($trip["id"]);
-	
-	echo "\n\n\n";
-	
-	print_r($response);
+  //
+  // show that we can also fetch a single trip
+
+  $trip = $response["result"][0];
+  $response = $automatic->getTrip($trip["id"]);
+
+  echo "\n\n\n";
+
+  print_r($response);
 }
 
 ?>
