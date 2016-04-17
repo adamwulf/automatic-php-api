@@ -42,11 +42,11 @@ class Automatic{
       throw new InvalidArgumentException("\$scopes parameter to authenticateForScopes should be an array");
     }
     $scopes = implode(" ", $scopes);
-    return $this->client->getAuthenticationUrl(AUTOMATIC_AUTHORIZATION_ENDPOINT, AUTOMATIC_REDIRECT_URI, array("scope" => $scopes));
+    return $this->client->getAuthenticationUrl(AUTOMATIC_AUTHORIZATION_ENDPOINT, "", array("scope" => $scopes));
   }
 
   public function getTokenForCode($code){
-    $params = array('code' => $_GET['code'], 'redirect_uri' => AUTOMATIC_REDIRECT_URI);
+    $params = array('code' => $_GET['code']);
     $response = $this->client->getAccessToken(AUTOMATIC_TOKEN_ENDPOINT, 'authorization_code', $params);
     $response = $this->validateResponseForErrors($response);
     if($response){
