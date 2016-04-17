@@ -70,9 +70,9 @@ class Automatic{
    * @param $per_page the number of trips to return per page
    */
   public function getTrips($page=1, $per_page=100){
-    $parameters = array("page" => $page, "per_page" => $per_page);
+    $parameters = array("page" => $page, "limit" => $per_page);
     $params = http_build_query($parameters, null, '&');
-    $response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trips?" . $params);
+    $response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip?" . $params);
     return $this->validateResponseForErrors($response);
   }
 
