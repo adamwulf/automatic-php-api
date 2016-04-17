@@ -72,7 +72,7 @@ class Automatic{
   public function getTrips($page=1, $per_page=100){
     $parameters = array("page" => $page, "limit" => $per_page);
     $params = http_build_query($parameters, null, '&');
-    $response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip?" . $params);
+    $response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip/?" . $params);
     return $this->validateResponseForErrors($response);
   }
 
@@ -83,7 +83,7 @@ class Automatic{
    * @param $trip_id the id of the trip to fetch
    */
   public function getTrip($trip_id){
-    return $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip/" . urlencode($trip_id));
+    return $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip/" . urlencode($trip_id) . "/");
   }
   /**
    * returns an array with userid
