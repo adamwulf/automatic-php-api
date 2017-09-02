@@ -55,7 +55,7 @@ if(count($response["result"])){
   //
   // show that we can also fetch a single trip
 
-  $trip = $response["result"][0];
+  $trip = $response["result"]["results"][0];
   $response = $automatic->getTrip($trip["id"]);
 
   echo "\n\n\n";

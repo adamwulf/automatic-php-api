@@ -42,11 +42,11 @@ class Automatic{
       throw new InvalidArgumentException("\$scopes parameter to authenticateForScopes should be an array");
     }
     $scopes = implode(" ", $scopes);
-    return $this->client->getAuthenticationUrl(AUTOMATIC_AUTHORIZATION_ENDPOINT, AUTOMATIC_REDIRECT_URI, array("scope" => $scopes));
+    return $this->client->getAuthenticationUrl(AUTOMATIC_AUTHORIZATION_ENDPOINT, "", array("scope" => $scopes));
   }
 
   public function getTokenForCode($code){
-    $params = array('code' => $_GET['code'], 'redirect_uri' => AUTOMATIC_REDIRECT_URI);
+    $params = array('code' => $_GET['code']);
     $response = $this->client->getAccessToken(AUTOMATIC_TOKEN_ENDPOINT, 'authorization_code', $params);
     $response = $this->validateResponseForErrors($response);
     if($response){
@@ -70,9 +70,9 @@ class Automatic{
    * @param $per_page the number of trips to return per page
    */
   public function getTrips($page=1, $per_page=100){
-    $parameters = array("page" => $page, "per_page" => $per_page);
+    $parameters = array("page" => $page, "limit" => $per_page);
     $params = http_build_query($parameters, null, '&');
-    $response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trips?" . $params);
+    $response = $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip/?" . $params);
     return $this->validateResponseForErrors($response);
   }
 
@@ -83,7 +83,7 @@ class Automatic{
    * @param $trip_id the id of the trip to fetch
    */
   public function getTrip($trip_id){
-    return $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip/" . urlencode($trip_id));
+    return $this->client->fetch(AUTOMATIC_API_ENDPOINT . "trip/" . urlencode($trip_id) . "/");
   }
   /**
    * returns an array with userid
